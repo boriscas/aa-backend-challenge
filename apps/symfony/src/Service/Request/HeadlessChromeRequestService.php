@@ -53,7 +53,9 @@ class HeadlessChromeRequestService implements WebRequestServiceInterface
             $events = $page->getFrameManager()?->getMainFrame()?->getLifeCycle();
             if ($events && isset($events['networkIdle'])) {
                 $headers[WebRequestParameter::HEADER_NAME_SERVER_TIMING] = number_format(
-                    $events['networkIdle'] / 1000, 3);
+                    $events['networkIdle'] / 1000,
+                    3
+                );
             }
             $result = $page->getHTML();
             $this->browser->close();

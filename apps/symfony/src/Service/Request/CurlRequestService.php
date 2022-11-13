@@ -4,8 +4,8 @@ namespace App\Service\Request;
 
 use App\Model\Dto\WebRequestParameter;
 use GuzzleHttp\Psr7\Response;
-use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class CurlRequestService implements WebRequestServiceInterface
 {
@@ -31,7 +31,10 @@ class CurlRequestService implements WebRequestServiceInterface
 
             $result = curl_exec($handle);
 
-            $httpCode = curl_getinfo($handle, CURLINFO_RESPONSE_CODE) ?? HttpFoundationResponse::HTTP_INTERNAL_SERVER_ERROR;
+            $httpCode = curl_getinfo(
+                $handle,
+                CURLINFO_RESPONSE_CODE
+            ) ?? HttpFoundationResponse::HTTP_INTERNAL_SERVER_ERROR;
             $loadTime = curl_getinfo($handle, CURLINFO_TOTAL_TIME) ?? null;
 
             if (null !== $loadTime) {
