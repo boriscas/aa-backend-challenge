@@ -1,0 +1,11 @@
+# docker-compose.dev.yml
+version: '3.9'
+services:
+
+  aa-symfony-php:
+    build: infrastructure/docker/images/php/
+    container_name: aa-symfony-php
+    volumes:
+      - ./apps/symfony:/var/www/html
+    ports:
+      - "30000:80"

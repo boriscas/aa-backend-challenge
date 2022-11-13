@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AA Backend Challenge{% endblock %}
+
+{% block body %}
+    <h3>Crawl Process</h3>
+
+    <form method="post">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="url" name="url" value="https://agencyanalytics.com"
+                   readonly>
+            <label class="mdl-textfield__label" for="url">URL of website to crawl</label>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="spa">
+                <input type="checkbox" id="spa" name="spa" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Is Single Page Application ?</span>
+            </label>
+        </div>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="submit">
+            GO
+        </button>
+    </form>
+
+    {% if errorMessage is defined and errorMessage is not empty %}
+        <div class="alert alert-danger">
+            Oops ! {{ errorMessage }}. Please retry.
+        </div>
+    {% endif %}
+
+    {% if report is defined %}
+        {% if report.getErrorMessage() %}
+            <div class="alert alert-danger">
+                Oops ! {{ report.getErrorMessage() }}. The report was finalized as is.
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                Success !
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {% if report is defined %}
+        <div class="aa-challenge-results">
+            <h4>Report</h4>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="pages"
+                       value="{{ report.getPages()|length }}" readonly>
+                <label class="mdl-textfield__label" for="pages">Total Crawled Pages</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="pagessucess"
+                       value="{{ report.getSuccessfullyCrawledPagesCount() }}" readonly>
+                <label class="mdl-textfield__label" for="pagessucess">Successfully Crawled Pages</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="pagesfail"
+                       value="{{ report.getFailedCrawledPagesCount() }}" readonly>
+                <label class="mdl-textfield__label" for="pagesfail">Failed Crawled Pages</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="uniqueimages"
+                       value="{{ report.getUniqueImagesCount() }}" readonly>
+                <label class="mdl-textfield__label" for="uniqueimages">Average Unique Images</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="uniqueinternallinks"
+                       value="{{ report.getUniqueInternalLinksCount() }}" readonly>
+                <label class="mdl-textfield__label" for="uniqueinternallinks">Average Unique Internal Links</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="uniqueexternallinks"
+                       value="{{ report.getUniqueExternalLinksCount() }}" readonly>
+                <label class="mdl-textfield__label" for="uniqueexternallinks">Average Unique External Links</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="pageload"
+                       value="{{ report.getPageLoadTime() }}" readonly>
+                <label class="mdl-textfield__label" for="pageload">Average Page Load Time (ms)</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="wordcount"
+                       value="{{ report.getWordCount() }}" readonly>
+                <label class="mdl-textfield__label" for="wordcount">Average Word Count</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="titlelength"
+                       value="{{ report.getTitleLength() }}" readonly>
+                <label class="mdl-textfield__label" for="titlelength">Average Title Length</label>
+            </div>
+            <h4>Pages Reports</h4>
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                <thead>
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Page URL</th>
+                    <th>Order Crawled</th>
+                    <th>HTTP response code</th>
+                    <th>Load Time (ms)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for page in report.pages %}
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric">{{ page.getUrl() }}</td>
+                        <td>{{ page.getNumber() }}</td>
+                        <td>{{ page.getHttpStatusCode() }}</td>
+                        <td>{{ page.getPageLoadTime() }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

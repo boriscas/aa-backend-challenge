@@ -1,0 +1,4 @@
+.idea/
+
+# copy the file from infrastructure/docker for local dev
+docker-compose.yml
