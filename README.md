@@ -6,7 +6,16 @@ Boris Castagna - boris.castagna@gmail.com
 
 ## Description
 
-This project is the AA BackEnd Challenge. It uses a custom docker image for PHP & Apache.
+This project is the AA BackEnd Challenge. It uses PHP 8.2 / Apache and a custom docker image for local development. 
+
+## App Usage
+
+This app provides an interface in order to crawl https://agencyanalytics.com/ website. Click on the 'GO' button to launch the crawl process.
+
+The app is deployed through Heroku at this URL : https://nameless-earth-44730.herokuapp.com/
+
+Please contact me if this app is reviewed after november 28th as Heroku announced a service disruption at this date:
+> "Starting November 28th, 2022, free dynos will no longer be available. To ensure your app continues to run, upgrade your plan."
 
 ## Local Installation
 
@@ -78,6 +87,12 @@ the test-pack (which provides several dependencies to produce tests in a Symfony
   - one that uses chrome-php (not optimized, in order to demo how a Single Page Application could be crawled)
 - 1 service that parses the DOM content to compute (we could have use a library such as Goutte or Panther, but we parsed the DOM "manually" for this challenge)
 - Several Models and DTOs classes to represent the business side of this project and easily manipulate data
+- Main difficulties were:
+  - Obtaining a redirect response when crawling a given link, for example : https://agencyanalytics.com/login redirects to https://app.agencyanalytics.com/login which contains only one link. We chose to exclude the redirects and count these pages as failures. 
+  - Getting the next link to crawl in the last crawled page: sometimes some external pages were found, so we needed to exclude these
+  - Parsing the DOM "manually", a lot of library do that very well, so it's difficult to match their quality
+
+! Last Minute note : Heroku does not support chrome-php binary so the Singe Page Application checkbox was disabled. It is testable locally through the docker container.
 
 ### PHP8 features
 Some PHP8 new features were used, such as :
@@ -95,7 +110,7 @@ Some PHP8 new features were used, such as :
 - Functions size are no more than ~40 lines (to fit on one screen entirely). It is a simple but effective way to keep code light and clear
 - Early return policy : functions and methods return value the earliest possible in order to avoid stacking if and indentation which reduces the visibility
 - Usage of DTOs (Data Transfer Objects) as soon as it is needed (i.e more than 1 value to return or pass through different functions or classes)
-- The implementation and architecture was done with some CleanCode concepts in mind such as SOLID, KISS and DRY.
+- The implementation was done with some CleanCode concepts in mind such as TDD, SOLID, KISS and DRY
 
 ### Tests
 - The library Mockery was used to handle mocks expectations testing.
@@ -104,11 +119,12 @@ Some PHP8 new features were used, such as :
 
 ### Possible improvements
 - A nicer front-end with either some polling to refresh the crawl status or even better, react + graphQL with an appropriate subscription to refresh crawl status
+- A debouncing of the GO button if the user clicks several times
 - ParserService could use more than 1 discriminator attribute to know if a DOMElement is unique
 - The controller could verify CrawlProcessOptionsDto() values by validating the input data sent through request
 - The form input field url is readonly but can be modified in the DOM to crawl other websites
 - When using the request services, the modularity can be better by using a Factory or a Facade pattern to select the appropriate Request service
 - Response HTTP code more accurate handling: for example, HTTP 204 NO CONTENT could be set to stats = 0 and not null and should be not considered a failure such 404/500
-- Tests scopes : more use cases, especially failures cases in CrawlManager could be tested
+- Tests scopes : more use cases and more coverage could be added, especially failures cases in CrawlManager
 - Code style could have been enforced with a PHPStan high level
 - And a lot of other improvements that could probably be found through code review with another or several other developers

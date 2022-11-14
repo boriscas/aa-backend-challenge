@@ -20,6 +20,10 @@ class HeadlessChromeRequestService implements WebRequestServiceInterface
     public function __construct(
         private readonly LoggerInterface $logger
     ) {
+    }
+
+    public function request(string $url): Response
+    {
         $browserFactory = new BrowserFactory('google-chrome');
         $this->browser = $browserFactory->createBrowser([
             // 'connectionDelay' => 1,
@@ -28,10 +32,7 @@ class HeadlessChromeRequestService implements WebRequestServiceInterface
             'sendSyncDefaultTimeout' => 30000,
             'startupTimeout' => 15
         ]);
-    }
 
-    public function request(string $url): Response
-    {
         $this->logger->info('-- Starting web request through HeadlessChromeRequestService to : ' . $url);
         $httpCode = \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR;
         $result = null;
